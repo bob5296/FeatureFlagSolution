@@ -20,7 +20,11 @@ builder.Services.AddDbContext<FeatureFlagDbContext>(options =>
     
 var app = builder.Build();
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<FeatureFlagDbContext>();
+    dbContext.Database.EnsureCreated();
+}
 // Configure the HTTP request pipeline
 app.UseExceptionHandling();
 

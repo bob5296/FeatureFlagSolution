@@ -1,3 +1,7 @@
+using System.Text.Json;
+using FeatureFlagApi.Models;
+using FeatureFlagCore.Exceptions;
+
 namespace FeatureFlagApi.Middleware;
 
 public class ExceptionHandlingMiddleware
@@ -25,7 +29,48 @@ public class ExceptionHandlingMiddleware
     
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        var (statusCode, response) = exception switch
+        {
+            FeatureFlagNotFoundException ex => (
+                StatusCodes.Status404NotFound,
+                new ErrorResponse { Type = "NotFound", Message = ex.Message }
+            ),
+            DuplicateFeatureFlagException ex => (
+                StatusCodes.Status409Conflict,
+                new ErrorResponse { Type = "Conflict", Message = ex.Message }
+            ),
+            DuplicateOverrideException ex => (
+                StatusCodes.Status409Conflict,
+                new ErrorResponse { Type = "Conflict", Message = ex.Message }
+            ),
+            OverrideNotFoundException ex => (
+                StatusCodes.Status404NotFound,
+                new ErrorResponse { Type = "NotFound", Message = ex.Message }
+            ),
+            ValidationException ex => (
+                StatusCodes.Status400BadRequest,
+                new ErrorResponse { Type = "ValidationError", Message = ex.Message, Errors = ex.Errors }
+            ),
+            _ => (
+                StatusCodes.Status500InternalServerError,
+                new ErrorResponse { Type = "InternalError", Message = "An unexpected error occurred." }
+            )
+        };
         
+        if (statusCode == StatusCodes.Status500InternalServerError)
+        {
+            _logger.LogError(exception, "Unhandled exception occurred");
+        }
+        else
+        {
+            _logger.LogWarning("Request failed with {StatusCode}: {Message}", statusCode, exception.Message);
+        }
+        
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = statusCode;
+        
+        var options = new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
     }
 }
 
