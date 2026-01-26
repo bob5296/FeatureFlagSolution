@@ -1,5 +1,8 @@
 using FeatureFlagApi.Middleware;
 using FeatureFlagCore.Data;
+using FeatureFlagCore.Interfaces;
+using FeatureFlagCore.Services;
+using FeatureFlags.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +20,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? "Data Source=featureflags.db";
 builder.Services.AddDbContext<FeatureFlagDbContext>(options =>
     options.UseSqlite(connectionString));
+
+// Register services
+builder.Services.AddScoped<IFeatureFlagRepository, FeatureFlagRepository>();
+builder.Services.AddScoped<IFeatureFlagService, FeatureFlagService>();
     
 var app = builder.Build();
 
