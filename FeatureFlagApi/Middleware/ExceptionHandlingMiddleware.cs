@@ -29,6 +29,7 @@ public class ExceptionHandlingMiddleware
     }
 }
 
+// can be seperated in different file
 public static class ExceptionHandlingMiddlewareExtensions
 {
     public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder app)

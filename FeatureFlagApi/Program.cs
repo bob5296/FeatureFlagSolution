@@ -1,4 +1,6 @@
 using FeatureFlagApi.Middleware;
+using FeatureFlagCore.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "Feature Flags API", Version = "v1" });
 });
 
+// Database configuration - SQLite
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? "Data Source=featureflags.db";
+builder.Services.AddDbContext<FeatureFlagDbContext>(options =>
+    options.UseSqlite(connectionString));
+    
 var app = builder.Build();
 
 
