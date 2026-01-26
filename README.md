@@ -197,4 +197,5 @@ The project includes 36 unit tests covering:
    Add architecture tests using NArch to enfore clean code is not being violated.
 7. **Add authentication/authorization**
  Secure endpoints using OAuth2.0 code flow
- 
+ 8. **Clean way to add extensions**
+ 9. **Clean registration of entities in OnModelCreating**

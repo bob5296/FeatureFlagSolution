@@ -17,6 +17,7 @@ public class FeatureFlagDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         
+        // can be moved to seperate files using ientitytypeconfigurationbuilder
         modelBuilder.Entity<FeatureFlag>(entity =>
         {
             entity.HasKey(f => f.Id);
