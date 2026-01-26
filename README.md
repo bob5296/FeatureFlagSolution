@@ -198,4 +198,10 @@ The project includes 36 unit tests covering:
 7. **Add authentication/authorization**
  Secure endpoints using OAuth2.0 code flow
  8. **Clean way to add extensions**
- 9. **Clean registration of entities in OnModelCreating**
+ 9. **Clean registration of en
+ 10. **User Id validation**
+    User Ids are assumed to be valid strings. No additional validation is performed on user ids.
+ 11. **DDD**
+    Implement proper DDD for entities, currently it is scaterred in repository.
+ 12. Add CI/CD using Docker image
+
