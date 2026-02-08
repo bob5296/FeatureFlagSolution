@@ -205,4 +205,5 @@ The project includes 36 unit tests covering:
     Implement proper DDD for entities, currently it is scaterred in repository.
  12. Add CI/CD using Docker image
  13. Use directory.props to centralize dependency management
+ 14. Use IOptions for config 
 
